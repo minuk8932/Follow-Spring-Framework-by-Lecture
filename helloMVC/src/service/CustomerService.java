@@ -5,10 +5,10 @@ import java.util.Map;
 
 import model.Customer;
 
-public class CustomerSerivce {
+public class CustomerService {
 	private Map<String, Customer> customers;
 
-	public CustomerSerivce(Map<String, Customer> customers) {
+	public CustomerService(Map<String, Customer> customers) {
 		customers = new HashMap<String, Customer>();
 		
 		addCustomer(new Customer("id001", "Alice", "alice.snut.ac.kr"));
