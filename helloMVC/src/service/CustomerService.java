@@ -8,7 +8,7 @@ import model.Customer;
 public class CustomerService {
 	private Map<String, Customer> customers;
 
-	public CustomerService(Map<String, Customer> customers) {
+	public CustomerService() {
 		customers = new HashMap<String, Customer>();
 		
 		addCustomer(new Customer("id001", "Alice", "alice.snut.ac.kr"));
