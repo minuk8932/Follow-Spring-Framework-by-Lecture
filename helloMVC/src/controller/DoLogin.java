@@ -34,7 +34,9 @@ public class DoLogin extends HttpServlet {
 		String customerId = request.getParameter("customerId");
 		
 		// perform bussiness login return a bean as a result
-		
+		CustomerService service = new CustomerService();
+		Customer customer = service.findCustomer(customerId);
+		request.setAttribute("customer", customer);
 		
 		String page = null;
 		
