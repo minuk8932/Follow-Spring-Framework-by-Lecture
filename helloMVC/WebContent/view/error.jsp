@@ -9,6 +9,9 @@
 <body>
 
 	This is an error page.
+	<p> 
+		<a href = "/helloMVC/index.jsp"> try again </a>
+	</p>
 
 </body>
 </html>
