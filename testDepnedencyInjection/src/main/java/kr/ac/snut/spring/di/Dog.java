@@ -1,5 +1,8 @@
 package kr.ac.snut.spring.di;
 
+import lombok.Setter;
+
+@Setter
 public class Dog implements AnimalType {
 	private String dogName; 
 	
