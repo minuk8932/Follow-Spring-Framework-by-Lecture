@@ -1,11 +1,13 @@
 package kr.ac.snut.spring.di;
 
-public class PetOwner {
-	private AnimalType animal;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
-	public PetOwner(AnimalType animal) {
-		this.animal = animal;
-	}
+public class PetOwner {
+	
+	@Autowired
+	@Qualifier(value = "qf_cat")
+	private AnimalType animal;
 	
 	public void play() {
 		animal.sound();
