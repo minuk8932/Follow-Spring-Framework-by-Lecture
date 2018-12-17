@@ -12,4 +12,7 @@
     <fullyQualifiedTypeName name="org.springframework.context.annotation.ImportResource"/>
     <fullyQualifiedTypeName name="java.lang.annotation.Retention"/>
     <fullyQualifiedTypeName name="org.springframework.stereotype.Component"/>
+    <fullyQualifiedTypeName name="org.aspectj.lang.annotation.Aspect"/>
+    <fullyQualifiedTypeName name="org.aspectj.lang.annotation.Pointcut"/>
+    <fullyQualifiedTypeName name="org.aspectj.lang.annotation.Before"/>
 </qualifiedTypeNameHistroy>
