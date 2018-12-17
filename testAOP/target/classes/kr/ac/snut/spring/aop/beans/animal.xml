@@ -7,17 +7,17 @@
 
 	<context:annotation-config></context:annotation-config>
 	
-	<bean id="dog" class="kr.ac.snut.spring.di.Dog">
+	<bean id="dog" class="kr.ac.snut.spring.aop.Dog">
 		<property name = "dogName" value = "poodle"></property>
 		<qualifier value="qf_dog"></qualifier>
 	</bean>
 
-	<bean id="cat" class="kr.ac.snut.spring.di.Cat">
+	<bean id="cat" class="kr.ac.snut.spring.aop.Cat">
 		<property name = "catName" value = "siam"></property>
 		<qualifier value="qf_cat"></qualifier>
 	</bean>
 
-	<bean id = "petOwner" class = "kr.ac.snut.spring.di.PetOwner">
+	<bean id = "petOwner" class = "kr.ac.snut.spring.aop.PetOwner">
 	</bean>
 	
 </beans>

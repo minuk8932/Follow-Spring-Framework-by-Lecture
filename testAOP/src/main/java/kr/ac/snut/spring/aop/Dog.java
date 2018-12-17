@@ -1,4 +1,4 @@
-package kr.ac.snut.spring.di;
+package kr.ac.snut.spring.aop;
 
 import lombok.Setter;
 
