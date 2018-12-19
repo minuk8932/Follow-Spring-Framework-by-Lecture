@@ -24,17 +24,5 @@
 	
 	<bean id="logger" class="kr.ac.snut.spring.aop.Logger"></bean>
 	
-	<!-- <aop:config>
-		<aop:aspect id="myAspect" ref="logger">
-			<aop:pointcut
-				expression="execution(void kr.ac.snut.spring.aop.*.sound())"
-				id="selectSound" />
-				
-			<aop:before method="aboutToSound"
-				pointcut-ref="selectSound" />
-
-		</aop:aspect>
-	</aop:config> -->
-	
 	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
 </beans>
