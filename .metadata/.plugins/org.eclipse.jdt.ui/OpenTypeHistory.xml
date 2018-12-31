@@ -3,4 +3,5 @@
     <typeInfo handle="=testDepnedencyInjection/src\/main\/java&lt;kr.ac.snut.spring.di{AnimalType.java[AnimalType" modifiers="513" timestamp="1544601395000"/>
     <typeInfo handle="=testDepnedencyInjection/src\/main\/java&lt;kr.ac.snut.spring.di{Cat.java[Cat" modifiers="1" timestamp="1544601965000"/>
     <typeInfo handle="=testAOP/src\/main\/java&lt;kr.ac.snut.spring.aop{Logger.java[Logger" modifiers="1" timestamp="1545036319000"/>
+    <typeInfo handle="=helloDB/src\/main\/java&lt;kr.ac.snut.spring.csemall{OfferDAO.java[OfferDAO" modifiers="1" timestamp="1546145194000"/>
 </typeInfoHistroy>

@@ -18,8 +18,4 @@
     	<property name="username" value="${jdbc.username}" />
     	<property name="password" value="${jdbc.password}" />
 	</bean>
-		
-	<!-- <bean id="offerDAO" class="kr.ac.snut.spring.csemall.OfferDAO">
-		 <property name="dataSource" ref="dataSource"></property>
-	</bean>  -->
 </beans>

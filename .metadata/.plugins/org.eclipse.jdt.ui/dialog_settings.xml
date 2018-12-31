@@ -55,21 +55,34 @@
 		<item value="1|.AppleSystemUIFont|11.0|0|COCOA|1|.AppleSystemUIFont" key="DIALOG_FONT_NAME"/>
 		<item value="639" key="DIALOG_HEIGHT"/>
 		<item value="381" key="DIALOG_X_ORIGIN"/>
-		<item value="0" key="DIALOG_Y_ORIGIN"/>
+		<item value="23" key="DIALOG_Y_ORIGIN"/>
 	</section>
 	<section name="org.eclipse.jdt.internal.ui.dialogs.OpenTypeSelectionDialog2">
 		<item value="true" key="ShowStatusLine"/>
 		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0A;&lt;History/&gt;" key="History"/>
+	</section>
+	<section name="DialogBounds_GenerateToStringDialog">
+		<item value="506" key="DIALOG_WIDTH"/>
+		<item value="1|.AppleSystemUIFont|11.0|0|COCOA|1|.AppleSystemUIFont" key="DIALOG_FONT_NAME"/>
+		<item value="639" key="DIALOG_HEIGHT"/>
+		<item value="387" key="DIALOG_X_ORIGIN"/>
+		<item value="0" key="DIALOG_Y_ORIGIN"/>
 	</section>
 	<section name="RefactoringWizard.preview">
 		<item value="600" key="width"/>
 		<item value="400" key="height"/>
 	</section>
 	<section name="SourceActionDialog.methods">
+		<item value="true" key="IgnoreDefault"/>
 		<item value="false" key="SynchronizedModifier"/>
 		<item value="false" key="Comments"/>
 		<item value="1" key="VisibilityModifier"/>
+		<item value="0" key="StringStyle"/>
+		<item value="0" key="ToStringTemplateSelected"/>
+		<item value="false" key="LimitElements"/>
+		<item value="false" key="SkipNull"/>
 		<item value="false" key="FinalModifier"/>
+		<item value="10" key="LimitValue"/>
 	</section>
 	<section name="quick_assist_proposal_size">
 	</section>
