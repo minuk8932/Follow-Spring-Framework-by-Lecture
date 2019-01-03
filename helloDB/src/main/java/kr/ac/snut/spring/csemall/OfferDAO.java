@@ -50,4 +50,13 @@ public class OfferDAO {
 			
 		return jdbcTemplateObject.query(sqlStatement, new OfferMapper());
 	}
+	
+	public boolean insert(Offer offer) {		
+		String name = offer.getName();
+		String email = offer.getEmail();
+		String text = offer.getText();
+
+		String sqlStatement = "INSERT into Offers (name, email, text) values (?, ?, ?)";
+		return (jdbcTemplateObject.update(sqlStatement, new Object[] {name, email, text}) == 1);
+	}
 }
