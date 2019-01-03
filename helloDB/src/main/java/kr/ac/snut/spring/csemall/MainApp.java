@@ -17,17 +17,20 @@ public class MainApp {
 			System.out.println(rows);
 		}
 		
-//		Offer insertData = new Offer("rudy", "rudy@snut.ac.kr", "shield bug");
-//		
-//		if(offerDAO.insert(insertData)) System.out.println("Object is Inserted!");
-//		else System.out.println("faild!");
+		Offer offerObject = new Offer("rudy", "rudy@snut.ac.kr", "shield bug");
 		
-		Offer updateData = offerDAO.getOffer("rudy");
-		System.out.println(updateData);
+		if(offerDAO.insert(offerObject)) System.out.println("Object is Inserted!");
+		else System.out.println("insert: failed!");
 		
-		updateData.setName("trash");
-		if(offerDAO.update(updateData)) System.out.println("update name: " + updateData);
-		else System.out.println("faild!");		
+		offerObject = offerDAO.getOffer("rudy");
+		System.out.println(offerObject);
+		
+		offerObject.setName("trash");
+		if(offerDAO.update(offerObject)) System.out.println("update name: " + offerObject);
+		else System.out.println("update: failed!");
+		
+		if(offerDAO.delete(offerObject.getId())) System.out.println("deleted!");
+		else System.out.println("delete: failed!");
 		
 		context.close();
 	}
