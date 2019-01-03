@@ -59,4 +59,14 @@ public class OfferDAO {
 		String sqlStatement = "INSERT into Offers (name, email, text) values (?, ?, ?)";
 		return (jdbcTemplateObject.update(sqlStatement, new Object[] {name, email, text}) == 1);
 	}
+	
+	public boolean update(Offer offer) {
+		int id = offer.getId();
+		String name = offer.getName();
+		String email = offer.getEmail();
+		String text = offer.getText();
+
+		String sqlStatement = "UPDATE Offers set name = ?, email = ?, text = ? WHERE id = ?";
+		return (jdbcTemplateObject.update(sqlStatement, new Object[] {name, email, text, id}) == 1);
+	}
 }

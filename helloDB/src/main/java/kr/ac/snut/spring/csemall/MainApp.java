@@ -17,15 +17,17 @@ public class MainApp {
 			System.out.println(rows);
 		}
 		
-		StringBuilder insertObject = new StringBuilder();
-		Offer insertData = new Offer("rudy", "rudy@snut.ac.kr", "shield bug");
-		insertObject.append(insertData.getName()).append(", ").append(insertData.getEmail()).append(", ")
-		.append(insertData.getText());
+//		Offer insertData = new Offer("rudy", "rudy@snut.ac.kr", "shield bug");
+//		
+//		if(offerDAO.insert(insertData)) System.out.println("Object is Inserted!");
+//		else System.out.println("faild!");
 		
-		if(offerDAO.insert(insertData)) System.out.println("Object " + "[" + insertObject + "]" + " is Inserted!");
-		else System.out.println("faild!");
+		Offer updateData = offerDAO.getOffer("rudy");
+		System.out.println(updateData);
 		
-		
+		updateData.setName("trash");
+		if(offerDAO.update(updateData)) System.out.println("update name: " + updateData);
+		else System.out.println("faild!");		
 		
 		context.close();
 	}
