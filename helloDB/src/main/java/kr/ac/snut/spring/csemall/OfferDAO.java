@@ -1,9 +1,14 @@
 package kr.ac.snut.spring.csemall;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 @Component("offerDAO")
@@ -18,5 +23,31 @@ public class OfferDAO {
 	public int getRowCount() {
 		String sqlStatement = "SELECT COUNT(*) from offers";
 		return jdbcTemplateObject.queryForObject(sqlStatement, Integer.class);
+	}
+	
+	// Qeurying & returning a single object
+	public Offer getOffer(String name) {
+		String sqlStatement = "SELECT * from Offers WHERE name = ?";
+		
+		return jdbcTemplateObject.queryForObject(sqlStatement, new Object[] {name}, new OfferMapper());
+//				new RowMapper<Offer>() {
+//					public Offer mapRow(ResultSet res, int rowNumber) throws SQLException {
+//						Offer offer = new Offer();
+//					
+//						offer.setId(res.getInt("id"));
+//						offer.setName(res.getString("name"));
+//						offer.setEmail(res.getString("email"));
+//						offer.setText(res.getString("text"));
+//					
+//						return offer;
+//					}
+//		});		// Anonymous Class
+	}
+	
+	// Qeurying & returning multiple objects
+	public List<Offer> getOffers() {
+		String sqlStatement = "SELECT * from Offers";
+			
+		return jdbcTemplateObject.query(sqlStatement, new OfferMapper());
 	}
 }
