@@ -30,18 +30,6 @@ public class OfferDAO {
 		String sqlStatement = "SELECT * from Offers WHERE name = ?";
 		
 		return jdbcTemplateObject.queryForObject(sqlStatement, new Object[] {name}, new OfferMapper());
-//				new RowMapper<Offer>() {
-//					public Offer mapRow(ResultSet res, int rowNumber) throws SQLException {
-//						Offer offer = new Offer();
-//					
-//						offer.setId(res.getInt("id"));
-//						offer.setName(res.getString("name"));
-//						offer.setEmail(res.getString("email"));
-//						offer.setText(res.getString("text"));
-//					
-//						return offer;
-//					}
-//		});		// Anonymous Class
 	}
 	
 	// Qeurying & returning multiple objects
