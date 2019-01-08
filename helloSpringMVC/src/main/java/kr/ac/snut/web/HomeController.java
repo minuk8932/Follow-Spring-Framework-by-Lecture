@@ -1,4 +1,4 @@
-package kr.ac.snut;
+package kr.ac.snut.web;
 
 import java.text.DateFormat;
 import java.util.Date;
