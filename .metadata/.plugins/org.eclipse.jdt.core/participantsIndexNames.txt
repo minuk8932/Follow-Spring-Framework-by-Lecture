@@ -1,7 +1,9 @@
 INDEX VERSION 1.131
 /Users/minchoba/Desktop/dev/workspace/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/421480375.index
 /springHello/src/main/java
-/Users/minchoba/Desktop/dev/workspace/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/548387001.index
-/helloMVC/src
 /Users/minchoba/Desktop/dev/workspace/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/416361351.index
+/helloMVC/src
+/Users/minchoba/Desktop/dev/workspace/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/3117552794.index
+/helloSpringMVC/src/main/java
+/Users/minchoba/Desktop/dev/workspace/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/548387001.index
 /helloMVC/src
