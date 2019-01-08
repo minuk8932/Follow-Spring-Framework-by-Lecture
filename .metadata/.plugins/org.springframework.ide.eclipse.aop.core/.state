@@ -9,4 +9,5 @@
 <aop-reference advice-type="BEFORE" bean="1:BeansModel|2:testAOP|3:src/main/java/kr/ac/snut/spring/aop/beans/animal.xml|7:beans:8|8:cat:17" bean-file="/testAOP/src/main/java/kr/ac/snut/spring/aop/beans/animal.xml" bean-start-line="17" factory-id="org.springframework.ide.eclipse.aop.core.aopReferenceElementFactory" file="/testAOP/src/main/java/kr/ac/snut/spring/aop/beans/animal.xml" source="=testAOP/src\/main\/java&lt;kr.ac.snut.spring.aop{Logger.java[Logger~aboutToSound" source-start-line="16" target="=testAOP/src\/main\/java&lt;kr.ac.snut.spring.aop{Cat.java[Cat~sound" target-start-line="10"/>
 </aspect-definition>
 </aop-project>
+<aop-project name="helloSpringMVC"/>
 </aop-reference-model>
