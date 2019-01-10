@@ -1,4 +1,4 @@
-package kr.ac.snut.web;
+package kr.ac.snut.controller;
 
 import java.util.Locale;
 
