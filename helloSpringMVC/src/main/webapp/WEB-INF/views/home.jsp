@@ -6,5 +6,8 @@
 </head>
 <body>
 
+<p> <a href = "${pageContext.request.contextPath}/offers"> show current offers </a>
+<p> <a href = "${pageContext.request.contextPath}/createoffer"> add a new offer </a>
+
 </body>
 </html>
