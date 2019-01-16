@@ -8,6 +8,6 @@
 </head>
 <body>
 	offer created!!<br>
-	<a href="${pageContext.request.contextPath}/offes"></a>
+	<a href="${pageContext.request.contextPath}/offers"> click here to view current offers. </a>
 </body>
 </html>

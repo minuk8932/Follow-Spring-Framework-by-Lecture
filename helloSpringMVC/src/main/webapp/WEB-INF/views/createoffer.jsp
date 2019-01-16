@@ -10,7 +10,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<from method="get" action="${pageContext.request.contextPath}/docreate">
+	<form method="get" action="${pageContext.request.contextPath}/docreate">
 		<table class="formtable">
 			<tr>
 				<td class="label">Name: </td>
@@ -22,13 +22,13 @@
 			</tr>
 			<tr>
 				<td class="label">Text: </td>
-				<td><textarea class="control" name="text" type="text" rows="10" cols="10"></textarea></td>
+				<td><textarea class="control" name="text" rows="10" cols="10"></textarea></td>
 			</tr>
 			<tr>
 				<td class="label"></td>
-				<td><input class="control " value="Create offer" type="submit"/></td>
+				<td><input class="control" value="Create offer" type="submit"/></td>
 			</tr>
 		</table>
-	</from>
+	</form>
 </body>
 </html>
