@@ -30,7 +30,13 @@ public class OffersController {
 	@RequestMapping("/createoffer")
 	public String createOffer(Model model) {
 		
-		
 		return "createoffer";
+	}
+	
+	@RequestMapping("/docreate")
+	public String doCreate(Model model, Offer offer) {
+		offersService.insert(offer);
+		
+		return "offercreated";
 	}
 }

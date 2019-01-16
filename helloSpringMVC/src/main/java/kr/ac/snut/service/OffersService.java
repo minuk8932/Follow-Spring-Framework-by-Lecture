@@ -20,4 +20,8 @@ public class OffersService {
 	public List<Offer> getCurrent(){
 		return offerDao.getOffers();
 	}
+	
+	public void insert(Offer offer) {
+		offerDao.insert(offer);
+	}
 }
