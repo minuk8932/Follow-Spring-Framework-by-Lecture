@@ -35,7 +35,6 @@ public class OffersController {
 	
 	@RequestMapping("/docreate")
 	public String doCreate(Model model, Offer offer) {
-		System.out.println(offer);
 		offersService.insert(offer);
 		
 		return "offercreated";
