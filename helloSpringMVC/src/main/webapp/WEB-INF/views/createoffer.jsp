@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="sform" uri="http://www.springframework.org/tags/form" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,25 +12,25 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form method="get" action="${pageContext.request.contextPath}/docreate">
+	<sform:form method="get" action="${pageContext.request.contextPath}/docreate" modelAttribute="offer">
 		<table class="formtable">
 			<tr>
 				<td class="label">Name: </td>
-				<td><input class="control" name="name" type="text"/></td>
+				<td><sform:input class="control" path="name" type="text"/></td>
 			</tr>
 			<tr>
 				<td class="label">Email: </td>
-				<td><input class="control" name="email" type="text"/></td>
+				<td><sform:input class="control" path="email" type="text"/></td>
 			</tr>
 			<tr>
 				<td class="label">Text: </td>
-				<td><textarea class="control" name="text" rows="10" cols="10"></textarea></td>
+				<td><sform:textarea class="control" path="text" rows="10" cols="10"></sform:textarea></td>
 			</tr>
 			<tr>
 				<td class="label"></td>
 				<td><input class="control" value="Create offer" type="submit"/></td>
 			</tr>
 		</table>
-	</form>
+	</sform:form>
 </body>
 </html>
