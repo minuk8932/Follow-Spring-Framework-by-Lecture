@@ -5,7 +5,112 @@
   <link rel="self" href="https://spring.io/blog.atom" />
   <id>http://spring.io/blog.atom</id>
   <icon>https://spring.io/favicon.ico</icon>
-  <updated>2019-01-15T22:48:00Z</updated>
+  <updated>2019-01-18T00:00:00Z</updated>
+  <entry>
+    <title>A Bootiful Podcast: an Interview with Google Developer Advocate Ray Tsang</title>
+    <link rel="alternate" href="https://spring.io/blog/2019/01/18/a-bootiful-podcast-an-interview-with-google-developer-advocate-ray-tsang" />
+    <category term="engineering" label="Engineering" />
+    <author>
+      <name>Josh Long</name>
+    </author>
+    <id>tag:spring.io,2019-01-17:3544</id>
+    <updated>2019-01-18T00:00:00Z</updated>
+    <content type="html">&lt;p&gt;In this week&amp;rsquo;s installment I talk to Google Cloud developer advocate, fellow Java Champion and prolific speaker and open source contributor in the Kubernetes and Spring communities, &lt;a href="http://twitter.com/saturnism"&gt;Ray Tsang&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Listen to the Podcast on &lt;a href="https://soundcloud.com/a-bootiful-podcast/google-developer-advocate-ray-tsang"&gt;SoundCloud&lt;/a&gt; or on iTunes (search &amp;ldquo;A Bootiful Podcast&amp;rdquo;)&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>Bootiful Azure: Object Storage Service (5/6)</title>
+    <link rel="alternate" href="https://spring.io/blog/2019/01/17/bootiful-azure-object-storage-service-5-6" />
+    <category term="engineering" label="Engineering" />
+    <author>
+      <name>Josh Long</name>
+    </author>
+    <id>tag:spring.io,2019-01-02:3517</id>
+    <updated>2019-01-17T00:00:00Z</updated>
+    <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;This is part 1 of a 6 part series, with new posts Mondays and Thursdays, introducing Microsoft Azure for Spring developers. I couldn&amp;rsquo;t have put this together without input from Microsoft&amp;rsquo;s Asir Vedamuthu Selvasingh, Yitao Dong, Bruno Borges, Brian Benz and Theresa Nguyen. You can find the code for this series &lt;a href="https://github.com/joshlong/bootiful-azure-article"&gt;on Github&lt;/a&gt;. Hit me up on &lt;a href="http://twitter.com/Starbuxman"&gt;Twitter (@starbuxman)&lt;/a&gt; as you&amp;rsquo;re reading the installments with any feedback or questions. You can also learn more about Microsoft Azure in my &lt;a href="http://twitter.com/SpringTipsLive"&gt;Spring Tips (@SpringTipsLive)&lt;/a&gt; installment, &lt;a href="https://spring.io/blog/2018/12/05/spring-tips-bootiful-microsoft-azure"&gt;&lt;em&gt;Bootiful Azure&lt;/em&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Now let&amp;rsquo;s turn to something a bit more&amp;hellip; mundane. Something that you, ideally, won&amp;rsquo;t even think about all that often. Applications often have storage requirements: they may need to store uploaded user content (binary data like pictures or documents), generated artifacts like PDF files, videos, music, etc. They might want to store logs. It&amp;rsquo;s not hard to think of things an application might want to durably store. &lt;/p&gt;
+&lt;p&gt;These applications &lt;em&gt;could&lt;/em&gt; use a filesystem, such as that on the local machine or a network attached filesystem like &lt;a href="https://en.wikipedia.org/wiki/Network_File_System"&gt;NFS (network file system)&lt;/a&gt;. I&amp;rsquo;ll use NFS to generically refer to any network attached file system like Samba, NFS (those mounted with the NFS protocol) itself, or legacy options like DAC, FAL, etc. NFS options provide a filesystem-like interface to files, often in a hierarchical format. NFS options are interesting because they&amp;rsquo;re like fileystems with which we&amp;rsquo;re all familiar, and everybody knows how to work with filesystems, right? Surely, everything looks like the hierarchy expressed in Windows Explorer? Or macOS Finder? Except, they look nothing like each other&amp;hellip;&lt;/p&gt;
+&lt;p&gt;Come to think of it, I had to say &amp;ldquo;like&amp;rdquo; when I said that NFS options are like filesystems. Some support more nuanced permissions models than others. Some support encoding and replication of metatadata attached to files and directories in the tree. Support support different speed guarantees for different operations; some filesystems may optimize for reads versus writes. Some might optimize for directory traversals. The client&amp;rsquo;s perspective of a file read or write is different depending on the client used. (Is a write consistent on all replication nodes immediately?) &lt;/p&gt;
+&lt;p&gt;Even if we assumed all the filesystems to which we wanted to write were POSIX-friendly - you could use &lt;code&gt;int open(const char *path, int flags)&lt;/code&gt; or &lt;code&gt;java.io.File&lt;/code&gt; - this may not be the case for our clients. What if the client doesn&amp;rsquo;t &amp;ldquo;speak&amp;rdquo; filesystem, and would prefer to manipulate the data in some other way? What if the client can only speak HTTP? Or if it wanted to speak Bittorrent for more efficient consolidation of downloads through peer-to-peer networks? &lt;/p&gt;
+&lt;p&gt;For these reasons, and more, Amazon Web Services introduced S3, the Simple Cloud Storage Service (get it? &amp;ldquo;S&amp;rdquo; times 3? &amp;ldquo;S3&amp;rdquo;?) which has since been something of a prevailing standard that all other cloud vendors need to support. For Microsoft Azure, the Object Storage Service (OSS) is the thing that provides an S3-like experience. It is not a POSIX filesystem. You can use its API directly, as we will here, but it&amp;rsquo;s &lt;a href="https://www.microsoft.com/developerblog/2016/05/22/access-azure-blob-storage-from-your-apps-using-s3-api/"&gt;also possible to use the S3Proxy to proxy writes to OSS&lt;/a&gt; using an AWS S3 client, of which there are countless! Azure&amp;rsquo;s Object Storage Service truly is &lt;em&gt;boring&lt;/em&gt; which is exactly what you want when dealing with something so fundamental as persistant volumes of file-like data. It even offers a standalone browser called &lt;a href="https://azure.microsoft.com/en-us/features/storage-explorer/"&gt;the Microsoft Azure Storage Explorer&lt;/a&gt; which runs (yep!) on Linux, Macintosh and Windows. That standalone browser lets you interrogate OSS stores &lt;em&gt;as well as&lt;/em&gt; CosmosDB data. How&amp;rsquo;s that for convenient? You can of course use the &lt;code&gt;az&lt;/code&gt; CLI or the API itself. We&amp;rsquo;re going to use the Spring integration for the Java API. &lt;/p&gt;&lt;h2&gt;&lt;a href="#configuring-azure-object-storage-service" class="anchor" name="configuring-azure-object-storage-service"&gt;&lt;/a&gt;Configuring Azure Object Storage Service&lt;/h2&gt;
+&lt;p&gt;You&amp;rsquo;ve got to create an Azure Object Storage Service account (&lt;code&gt;bootiful&lt;/code&gt;) assigned to the existing resource group &lt;code&gt;bootiful&lt;/code&gt;. Then, create a storage container (&lt;code&gt;files&lt;/code&gt;) assigned to the just-created storage account. Here&amp;rsquo;s a sample script.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="prettyprint shell"&gt;#!/usr/bin/env bash&#xD;
+&#xD;
+rg=$1&#xD;
+accountname=bootiful&#xD;
+&#xD;
+az storage account create --name ${accountname} --resource-group ${rg}&#xD;
+az storage container create -n files --account-name ${accountname}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Use the following command to ascertain the connection string required to connect to the application.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="prettyprint shell"&gt;az storage account show-connection-string --resource-group bootiful --name bootiful
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note the connection string for later.&lt;/p&gt;&lt;h2&gt;&lt;a href="#introducing-azure-object-storage-service-into-your-spring-application" class="anchor" name="introducing-azure-object-storage-service-into-your-spring-application"&gt;&lt;/a&gt;Introducing Azure Object Storage Service into your Spring Application&lt;/h2&gt;
+&lt;p&gt;Add &lt;code&gt;com.microsoft.azure&lt;/code&gt;: &lt;code&gt;azure-storage-spring-boot-starter&lt;/code&gt; to your application&amp;rsquo;s build file. Make sure you&amp;rsquo;ve specified the OSS connection string for the &lt;code&gt;azure.storage.connection-string&lt;/code&gt; property.&lt;/p&gt;
+&lt;p&gt;We&amp;rsquo;ll read the bytes for an image of a cat in our application&amp;rsquo;s &lt;code&gt;src/main/resources&lt;/code&gt; directory and then write those bytes to the Object Storage Service as a &amp;ldquo;block blog&amp;rdquo;. There are other interfaces through which you can talk to OSS, but for our purposes it&amp;rsquo;s very natural to think about it as an ensemble of &amp;ldquo;containers&amp;rdquo; (logical groupings of things, almost like a directory or a bucket in S3 parlance) and &amp;ldquo;blobs.&amp;rdquo; A blob is a file, basically, with a name and metadata associated with it. All that the following example does is store the bytes for a photo of a cat into a container called &lt;code&gt;files&lt;/code&gt; under a random name prefixed with &lt;code&gt;cat-&lt;/code&gt; and suffixed with &lt;code&gt;.jpg&lt;/code&gt;. &lt;/p&gt;
+&lt;pre&gt;&lt;code class="prettyprint java"&gt;package com.example.bootifulazure;&#xD;
+&#xD;
+import com.microsoft.azure.storage.CloudStorageAccount;&#xD;
+import com.microsoft.azure.storage.StorageException;&#xD;
+import com.microsoft.azure.storage.blob.CloudBlobContainer;&#xD;
+import com.microsoft.azure.storage.blob.CloudBlockBlob;&#xD;
+import lombok.extern.log4j.Log4j2;&#xD;
+import org.springframework.beans.factory.annotation.Value;&#xD;
+import org.springframework.boot.context.event.ApplicationReadyEvent;&#xD;
+import org.springframework.context.event.EventListener;&#xD;
+import org.springframework.core.io.Resource;&#xD;
+import org.springframework.stereotype.Component;&#xD;
+&#xD;
+import java.io.InputStream;&#xD;
+import java.net.URISyntaxException;&#xD;
+import java.util.UUID;&#xD;
+&#xD;
+@Log4j2&#xD;
+@Component&#xD;
+class ObjectStorageServiceDemo {&#xD;
+&#xD;
+    private final CloudStorageAccount cloudStorageAccount;&#xD;
+    private final Resource resource;&#xD;
+    private final CloudBlobContainer files;&#xD;
+&#xD;
+    ObjectStorageServiceDemo(&#xD;
+        CloudStorageAccount csa,&#xD;
+        @Value(&amp;quot;classpath:/cat.jpg&amp;quot;) Resource cat) throws URISyntaxException, StorageException {&#xD;
+        this.resource = cat;&#xD;
+        this.cloudStorageAccount = csa;&#xD;
+        this.files = this.cloudStorageAccount&#xD;
+            .createCloudBlobClient()&#xD;
+            .getContainerReference(&amp;quot;files&amp;quot;);&#xD;
+    }&#xD;
+&#xD;
+    @EventListener(ApplicationReadyEvent.class)&#xD;
+    public void demo() throws Exception {&#xD;
+        CloudBlockBlob blockBlobReference = this.files.getBlockBlobReference(&amp;quot;cat-&amp;quot; + UUID.randomUUID().toString() + &amp;quot;.jpg&amp;quot;);&#xD;
+        try (InputStream in = this.resource.getInputStream()) {&#xD;
+            blockBlobReference.upload(in, this.resource.contentLength());&#xD;
+            log.info(&amp;quot;uploaded blockblob to &amp;quot; + blockBlobReference.getStorageUri());&#xD;
+        }&#xD;
+&#xD;
+    }&#xD;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The Microsoft Azure-specific bits are less than trivial. We obtain a reference to a container and then write to it and then log out the addressable URI of the resource. How &lt;em&gt;mundane&lt;/em&gt;! And that&amp;rsquo;s exactly what you want in a computing system primitive like a filesystem. It should be &lt;em&gt;mundane&lt;/em&gt;. To be very honest, I was more pleased with getting to use Java 7&amp;rsquo;s try-with-resources syntax for the &lt;code&gt;Autocloseable&lt;/code&gt; &lt;code&gt;InputStream&lt;/code&gt; reference! &lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>Spring Tips: JavaFX</title>
+    <link rel="alternate" href="https://spring.io/blog/2019/01/16/spring-tips-javafx" />
+    <category term="engineering" label="Engineering" />
+    <author>
+      <name>Josh Long</name>
+    </author>
+    <id>tag:spring.io,2019-01-16:3538</id>
+    <updated>2019-01-16T08:03:58Z</updated>
+    <content type="html">&lt;p&gt;Hi Spring fans! In this installment of Spring Tips, we look at how to integrate Spring with JavaFX, a UI framework that supports building rich desktop applications.&lt;/p&gt;
+&lt;p&gt;speaker: &lt;a href="http://twitter.com/Starbuxman"&gt;Josh Long&lt;/a&gt;&lt;/p&gt;
+&lt;iframe width="560" height="315" src="https://www.youtube.com/embed/lPy9mc_O_gU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;</content>
+  </entry>
   <entry>
     <title>This Week in Spring - January 15th, 2019</title>
     <link rel="alternate" href="https://spring.io/blog/2019/01/15/this-week-in-spring-january-15th-2019" />
@@ -130,9 +235,11 @@
 &lt;p&gt;We used the opportunity to streamline the Jira field values, so for example 25 component values in Jira correspond to 5 &lt;code&gt;&amp;quot;in: *&amp;quot;&lt;/code&gt; labels on GitHub. The &lt;code&gt;&amp;quot;status: *&amp;quot;&lt;/code&gt; and the &lt;code&gt;&amp;quot;type: *&amp;quot;&lt;/code&gt; labels have also been given extra through and revised.&lt;/p&gt;
 &lt;p&gt;Our choice of labels is aligned with the labels used in Spring Boot. The Boot team has given their process and labels a lot of thought, and we know the consistency will be appreciated by many. See the complete &lt;a href="https://github.com/spring-projects/spring-framework/labels"&gt;set of labels&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;In Jira, many fields and labels are modifiable. In GitHub, only contributors can add or remove labels. This makes perfect sense. Reporters simply describe the issue, while contributors categorize it. Both developers and contributors can use the labels to search.&lt;/p&gt;&lt;h3&gt;&lt;a href="#fix-versions" class="anchor" name="fix-versions"&gt;&lt;/a&gt;Fix Versions&lt;/h3&gt;
-&lt;p&gt;A GitHub issue can have only one target milestone (i.e. &amp;ldquo;Fix version&amp;rdquo;). A Jira issue can have multiple fix versions. This feels like a drawback but it has forced us to consider some meaningful adjustments.&lt;/p&gt;
-&lt;p&gt;For example &lt;a href="https://jira.spring.io/browse/SPR-17226?redirect=false"&gt;SPR-17226&lt;/a&gt; has fix versions &amp;ldquo;4.3.19&amp;rdquo;, &amp;ldquo;5.0.9&amp;rdquo;, and &amp;ldquo;5.1 RC3&amp;rdquo; while the imported issue &lt;a href="https://github.com/spring-projects/spring-framework/issues/21759"&gt;#21759&lt;/a&gt; shows &amp;ldquo;5.0.9&amp;rdquo; as the target milestone, and &amp;ldquo;4.3.19&amp;rdquo; as the backport version. This makes perfects sense, i.e. the issue is fixed in the current production branch (5.0.x as of Aug 2018) and not in the pre-release &amp;ldquo;5.1 RC3&amp;rdquo; version. We intend to follow through on this for the upcoming 5.2 development cycle by fixing issues in the current production branch (5.1.x) and forward merging the commit to master (towards 5.2), with the occasional, and at this point rare, backports to 4.3.x.&lt;/p&gt;
-&lt;p&gt;For historic backports, we&amp;rsquo;ve created one issue holder for all backported issues per release. There are about &lt;a href="https://github.com/spring-projects/spring-framework/issues?utf8=%E2%9C%93&amp;q=in%3Atitle+%22backported+issues%22"&gt;45 of these&lt;/a&gt;. Going forward we intend to represent backports with invidual issues. Those will be created automatically and used for release tracking. The majority of conversations should happen on the main issue, while backport issues are used for discussions specific to the backport.&lt;/p&gt;&lt;h3&gt;&lt;a href="#markup" class="anchor" name="markup"&gt;&lt;/a&gt;Markup&lt;/h3&gt;
+&lt;p&gt;A Jira issue can have multiple fix versions, while a GitHub issue can have only one target milestone. This feels like a drawback but there is more than is apparent to the eye, and the constraint has forced us to consider some meaningful adjustments.&lt;/p&gt;
+&lt;p&gt;Take &lt;a href="https://jira.spring.io/browse/SPR-17226?redirect=false"&gt;SPR-17226&lt;/a&gt; for example with fix versions &amp;ldquo;4.3.19&amp;rdquo;, &amp;ldquo;5.0.9&amp;rdquo;, and &amp;ldquo;5.1 RC3&amp;rdquo;. While the issue was fixed in all 3 versions, there is no need to pollute the release notes of &amp;ldquo;5.1 RC3&amp;rdquo; which was still in development at the time. We can instead say it was fixed in 5.0.9 and backported to 4.3.19, and it&amp;rsquo;s a contributors&amp;rsquo; concern to make sure the fix is propagated to the next version that&amp;rsquo;s still in development. This is how it shows on the GitHub issue &lt;a href="https://github.com/spring-projects/spring-framework/issues/21759"&gt;#21759&lt;/a&gt; Could we have made this adjustment in the past? Sure, but the support for multiple fix versions in Jira didn&amp;rsquo;t force us to consider.&lt;/p&gt;
+&lt;p&gt;This is a small adjustment that will result in cleaner release notes, but it will also impact the way we commit fixes. When the next version is in development on master, we will apply the fix to the current production branch first, then forward merge to master, and then cherry-pick from the older production branch. As opposed to apply the fix to master, and then cherry-pick from the production branches. The result is a cleaner commit history since forward merges help git to be aware or related changes.&lt;/p&gt;
+&lt;p&gt;As for backports, since an issue can have only one target milestone, we must create separate issues to represent the backporting of a fix. To use the same example, it pays to pick &amp;ldquo;5.0.9&amp;rdquo; as the target milestone because we&amp;rsquo;d have one backport issue only. If we picked &amp;ldquo;5.1 RC3&amp;rdquo;, we would need two backport issues instead. To give you sense of the huge difference this makes, say the Spring Framework was on GitHub Issues from day 1. If we used the latter approach we&amp;rsquo;d have about 2,500 backport issues today. If we used the former, we would have about a 1000.&lt;/p&gt;
+&lt;p&gt;For historic backports, we&amp;rsquo;ve created one issue holder per release. There are about &lt;a href="https://github.com/spring-projects/spring-framework/issues?utf8=%E2%9C%93&amp;q=in%3Atitle+%22backported+issues%22"&gt;45 of those&lt;/a&gt;. Going forward we&amp;rsquo;ll have individual issues for all backported fixes which will be created automatically and used mainly for release tracking. As for discussions, the majority of conversations should happen on the main issue, while backport issues will be used only for discussions specific to the backport.&lt;/p&gt;&lt;h3&gt;&lt;a href="#markup" class="anchor" name="markup"&gt;&lt;/a&gt;Markup&lt;/h3&gt;
 &lt;p&gt;The markup was without a doubt the biggest and most painful part of the migration. A 15 year history of issue tracking reflects big shifts in programming styles styles that in turn determine what shows up in comments. &lt;/p&gt;
 &lt;p&gt;For example lots of XML was pasted in comments in the beginning, and Markdown treats that as &lt;a href="https://spec.commonmark.org/0.28/#html-blocks"&gt;HTML blocks&lt;/a&gt; which results in the tags not showing at all. Of course if those were surrounded with &lt;code&gt;{code:xml}...{code}&lt;/code&gt;, it would look fine, but in those days markup wasn&amp;rsquo;t commonly used and the XML snippets showed up anyway, not forcing the issue, and consequently making it impossible to migrate properly.&lt;/p&gt;
 &lt;p&gt;There are lots of other intricacies such as the escaping of curly braces, to avoid the effect of monospacing, or the escaping of asterisks to prevent them from disappearing as markup for bold. I&amp;rsquo;ll spare you the details. Suffice to say we put a lot of effort into making sure the quality of markup conversion is reasonably high.&lt;/p&gt;
@@ -396,12 +503,12 @@ class ServiceBusProducer implements Ordered {&#xD;
   <entry>
     <title>Spring Security 5.1.3, 5.0.11, 4.2.11 Released</title>
     <link rel="alternate" href="https://spring.io/blog/2019/01/11/spring-security-5-1-3-5-0-11-4-2-11-released" />
-    <category term="engineering" label="Engineering" />
+    <category term="releases" label="Releases" />
     <author>
       <name>Josh Cummings</name>
     </author>
     <id>tag:spring.io,2019-01-11:3529</id>
-    <updated>2019-01-11T15:52:05Z</updated>
+    <updated>2019-01-11T15:52:00Z</updated>
     <content type="html">&lt;div class="paragraph"&gt;
 &lt;p&gt;On behalf of the community I am pleased to announce the release of Spring Security 5.1.3 (&lt;a href="https://github.com/spring-projects/spring-security/issues?q=is%3Aclosed+milestone%3A5.1.3+sort%3Aupdated-desc"&gt;changelog&lt;/a&gt;), 5.0.11 (&lt;a href="https://github.com/spring-projects/spring-security/issues?q=is%3Aclosed+milestone%3A5.0.11+sort%3Aupdated-desc"&gt;changelog&lt;/a&gt;), and 4.2.11 (&lt;a href="https://github.com/spring-projects/spring-security/issues?q=is%3Aclosed+milestone%3A4.2.11+sort%3Aupdated-desc"&gt;changelog&lt;/a&gt;). This series of releases provides a round of bug fixes and users are encouraged to update to the latest patch release.&lt;/p&gt;
 &lt;/div&gt;
@@ -914,225 +1021,5 @@ open fun transform(): (String) -&amp;gt; String {&#xD;
   &lt;li&gt;&lt;a href="https://github.com/RakeshBhat/rbsample-sprng-camel-mongo"&gt;Spring Boot-enabled Apache Camel integration with Rabbitmq and MongoDB 3&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;By the way I recently did an eight part &lt;a href="https://spring.io/blog/2018/08/20/bootiful-gcp-getting-started-with-spring-cloud-for-google-cloud-platform-1-8"&gt;series introducing Spring for Google Cloud&lt;/a&gt;. You might want to check that series out, too.&lt;/li&gt;
 &lt;/ul&gt;</content>
-  </entry>
-  <entry>
-    <title>Announcing General Availability of Spring Cloud Stream - Fishtown.RELEASE (2.1.0.RELEASE)</title>
-    <link rel="alternate" href="https://spring.io/blog/2019/01/08/announcing-general-availability-of-spring-cloud-stream-fishtown-release-2-1-0-release" />
-    <category term="engineering" label="Engineering" />
-    <author>
-      <name>Oleg Zhurakousky</name>
-    </author>
-    <id>tag:spring.io,2019-01-08:3523</id>
-    <updated>2019-01-08T14:39:00Z</updated>
-    <content type="html">&lt;p&gt;After an exciting journey, we are pleased to announce the General Availability release of the &lt;a href="https://github.com/spring-cloud/spring-cloud-stream"&gt;Spring Cloud Stream&lt;/a&gt; Fishtown release train - Fishtown.RELEASE/2.1.0.RELEASE.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="prettyprint xml"&gt;&amp;lt;dependencyManagement&amp;gt;&#xD;
-    &amp;lt;dependencies&amp;gt;&#xD;
-        &amp;lt;dependency&amp;gt;&#xD;
-            &amp;lt;groupId&amp;gt;org.springframework.cloud&amp;lt;/groupId&amp;gt;&#xD;
-            &amp;lt;artifactId&amp;gt;spring-cloud-stream-dependencies&amp;lt;/artifactId&amp;gt;&#xD;
-            &amp;lt;version&amp;gt;Fishtown.RELEASE&amp;lt;/version&amp;gt;&#xD;
-            &amp;lt;type&amp;gt;pom&amp;lt;/type&amp;gt;&#xD;
-            &amp;lt;scope&amp;gt;import&amp;lt;/scope&amp;gt;&#xD;
-        &amp;lt;/dependency&amp;gt;&#xD;
-    &amp;lt;/dependencies&amp;gt;&#xD;
-&amp;lt;/dependencyManagement&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Spring Cloud Stream Fishtown (2.1.0.RELEASE) is available for use in &lt;a href="https://repo1.maven.org/maven2/org/springframework/cloud/spring-cloud-stream/2.1.0.RELEASE/"&gt;Maven Central&lt;/a&gt; and the &lt;a href="http://repo.spring.io/libs-release/org/springframework/cloud/spring-cloud-stream/2.1.0.RELEASE/"&gt;Spring Repo&lt;/a&gt;.&lt;/p&gt;
-&lt;hr&gt;&lt;h1&gt;&lt;a href="#this-release-encompasses-the-following" class="anchor" name="this-release-encompasses-the-following"&gt;&lt;/a&gt;This release encompasses the following:&lt;/h1&gt;&lt;h3&gt;&lt;a href="#notable-dependency-upgrades" class="anchor" name="notable-dependency-upgrades"&gt;&lt;/a&gt;Notable Dependency Upgrades&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Spring Boot 2.1.x&lt;/li&gt;
-  &lt;li&gt;Reactor Californium.RELEASE&lt;/li&gt;
-  &lt;li&gt;Spring Cloud Function 2.0.0.RELEASE&lt;/li&gt;
-&lt;/ul&gt;&lt;h4&gt;&lt;a href="#core" class="anchor" name="core"&gt;&lt;/a&gt;Core&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Support for &lt;a href="https://cloud.spring.io/spring-cloud-function/"&gt;Spring Cloud Function&lt;/a&gt; programming model (see &lt;a href="https://spring.io/blog/2018/08/28/spring-cloud-stream-fishtown-m2-2-1-0-m2-release-announcement"&gt;M2 release announcement&lt;/a&gt; for more details)&lt;/li&gt;
-  &lt;li&gt;Support for Message Listener container customization by simply registering implementation of &lt;code&gt;ListenerContainerCustomizer&lt;/code&gt; bean.&lt;/li&gt;
-  &lt;li&gt;Binding properties precedence support (see &lt;a href="https://spring.io/blog/2018/06/28/spring-cloud-stream-fishtown-m1-2-1-0-m1-release-announcement"&gt;M1 release announcement&lt;/a&gt; for more details)&lt;/li&gt;
-  &lt;li&gt;Support for &lt;em&gt;output&lt;/em&gt; binding actuator endpoints was added as well.&lt;/li&gt;
-&lt;/ul&gt;&lt;h4&gt;&lt;a href="#rabbit-binder" class="anchor" name="rabbit-binder"&gt;&lt;/a&gt;Rabbit Binder&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Exposed support for setting queue length as and overflow policy&lt;/li&gt;
-  &lt;li&gt;Multiplex support&lt;/li&gt;
-  &lt;li&gt;Support for Consumer Tags&lt;/li&gt;
-&lt;/ul&gt;&lt;h4&gt;&lt;a href="#kafka-binder" class="anchor" name="kafka-binder"&gt;&lt;/a&gt;Kafka Binder&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Wild cards are now supported in kafka topic names in the binder [kafka binder]&lt;/li&gt;
-  &lt;li&gt;New annotation &lt;code&gt;KafkaStreamsStateStore&lt;/code&gt; for creating state stores in lower level processor API in kafka streams [kafka streams binder]&lt;/li&gt;
-  &lt;li&gt;Removing the creation of unnecessary repartition topics in the kafka streams binder&lt;/li&gt;
-  &lt;li&gt;Consuming from multiple topics in kafka streams binder&lt;/li&gt;
-  &lt;li&gt;Improvements in in interactive query support in kafka streams binder - Multiple consumers and querying across them are now supported.&lt;/li&gt;
-  &lt;li&gt;&lt;code&gt;QueryableStoreRegistry&lt;/code&gt; is deprecated and a new API is provided called &lt;code&gt;InteractiveQueryService&lt;/code&gt;. In addition to provide ability to query state stores, this API also gives information about the host where the consumer is running.&lt;/li&gt;
-  &lt;li&gt;Multiplex support&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Once again huge thanks to all the community contributors!!! &lt;/p&gt;
-&lt;p&gt;As always, we welcome feedback and contributions, so please reach out to us on &lt;a href="https://stackoverflow.com/questions/tagged/spring-cloud-stream"&gt;Stackoverflow&lt;/a&gt; or &lt;a href="https://github.com/spring-cloud/spring-cloud-stream/"&gt;GitHub&lt;/a&gt; or via &lt;a href="https://gitter.im/spring-cloud/spring-cloud-stream"&gt;Gitter&lt;/a&gt;. &lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>Announcing General Availability of Spring Cloud Function - 2.0.0.RELEASE</title>
-    <link rel="alternate" href="https://spring.io/blog/2019/01/08/announcing-general-availability-of-spring-cloud-function-2-0-0-release" />
-    <category term="engineering" label="Engineering" />
-    <author>
-      <name>Oleg Zhurakousky</name>
-    </author>
-    <id>tag:spring.io,2019-01-08:3522</id>
-    <updated>2019-01-08T13:27:51Z</updated>
-    <content type="html">&lt;p&gt;We are pleased to announce general availability of the Spring Cloud Function - 2.0.0.RELEASE.&lt;/p&gt;
-&lt;p&gt;Individual modules of Spring Cloud Function 2.0.0.RELEASE are available for use in the &lt;a href="https://repo.spring.io/libs-release/org/springframework/cloud/"&gt;Spring Release&lt;/a&gt; repository as well as &lt;a href="https://repo.maven.apache.org/maven2/org/springframework/cloud/"&gt;Maven Central repository&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;This release encompasses the following:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href="https://spring.io/blog/2018/09/11/kotlin-support-in-spring-cloud-function"&gt;Kotlin support&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;New programming model for &lt;a href="https://spring.io/blog/2018/09/25/spring-cloud-function-2-0-and-azure-functions"&gt;Azure Functions&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Automatic (optional) export of &lt;code&gt;Supplier&lt;/code&gt; on startup in web adapter&lt;/li&gt;
-  &lt;li&gt;&lt;a href="https://spring.io/blog/2018/10/22/functional-bean-registrations-in-spring-cloud-function"&gt;Functional Bean Registrations&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Support for transparent type conversion for functions with input of type &lt;code&gt;Collection&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Builds on Spring Boot 2.1&lt;/li&gt;
-&lt;/ul&gt;&lt;h3&gt;&lt;a href="#how-can-you-help" class="anchor" name="how-can-you-help"&gt;&lt;/a&gt;How can you help?&lt;/h3&gt;
-&lt;p&gt;If you&amp;rsquo;re interested in helping out, check out the &lt;a href="https://github.com/spring-cloud/spring-cloud-function/labels/ideal-for-contribution"&gt;&amp;ldquo;ideal for contribution&amp;rdquo; tag&lt;/a&gt; in the issue repository. If you have general questions, please ask on &lt;a href="http://stackoverflow.com"&gt;stackoverflow.com&lt;/a&gt; using the &lt;a href="http://stackoverflow.com/tags/spring-cloud-function"&gt;&lt;code&gt;spring-cloud-function&lt;/code&gt; tag&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://cloud.spring.io/spring-cloud-function/"&gt;Project Page&lt;/a&gt; | &lt;a href="https://github.com/spring-cloud/spring-cloud-function"&gt;GitHub&lt;/a&gt; | &lt;a href="https://github.com/spring-cloud/spring-cloud-function/issues"&gt;Issues&lt;/a&gt; | &lt;a href="http://cloud.spring.io/spring-cloud-static/spring-cloud-function/2.0.0.RELEASE/"&gt;Documentation&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>Bootiful Azure: SQL-based data access with Microsoft SQL Server  (2/6)</title>
-    <link rel="alternate" href="https://spring.io/blog/2019/01/07/bootiful-azure-sql-based-data-access-with-microsoft-sql-server-2-6" />
-    <category term="engineering" label="Engineering" />
-    <author>
-      <name>Josh Long</name>
-    </author>
-    <id>tag:spring.io,2019-01-02:3520</id>
-    <updated>2019-01-07T00:00:00Z</updated>
-    <content type="html">&lt;blockquote&gt;
-  &lt;p&gt;This is part 2 of a 6 part series, with new posts Mondays and Thursdays, introducing Microsoft Azure for Spring developers. I couldn&amp;rsquo;t have put this together without input from Microsoft&amp;rsquo;s Asir Vedamuthu Selvasingh, Yitao Dong, Bruno Borges, Brian Benz and Theresa Nguyen. You can find the code for this series &lt;a href="https://github.com/joshlong/bootiful-azure-article"&gt;on Github&lt;/a&gt;. Hit me up on &lt;a href="http://twitter.com/Starbuxman"&gt;Twitter (@starbuxman)&lt;/a&gt; as you&amp;rsquo;re reading the installments with any feedback or questions. You can also learn more about Microsoft Azure in my &lt;a href="http://twitter.com/SpringTipsLive"&gt;Spring Tips (@SpringTipsLive)&lt;/a&gt; installment, &lt;a href="https://spring.io/blog/2018/12/05/spring-tips-bootiful-microsoft-azure"&gt;&lt;em&gt;Bootiful Azure&lt;/em&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;Here are all the installments: &lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href="https://spring.io/blog/2019/01/03/bootiful-azure-taking-your-first-steps-with-microsoft-azure-1-6"&gt;Bootiful Azure: Taking Your First Steps with Microsoft Azure&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href="https://spring.io/blog/2019/01/07/bootiful-azure-sql-based-data-access-with-microsoft-sql-server-2-6"&gt;Bootiful Azure: SQL-based data access with Microsoft SQL Server&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href="https://spring.io/blog/2019/01/10/bootiful-azure-global-scale-data-access-with-cosmosdb-3-6"&gt;Bootiful Azure: Global Scale Data Access with CosmosDB&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Let&amp;rsquo;s start with something short and sweet, the legendary Microsoft SQL Server. Microsoft SQL Server is an interesting beast. Sure, you can run it yourself, but wouldn&amp;rsquo;t you rather Microsoft, who build the product itself, do that for you? Now &lt;em&gt;that&lt;/em&gt; is a full-service solution! Imagine how nice that is? You don&amp;rsquo;t often see that sort of solution in other contexts. Imagine buying a car that you can drive as fast as you&amp;rsquo;d like, and on which the the manufacturer will guarantee any and all maintenance and repairs? Forever? Even if the car is hit with an asteroid? This is why running Microsoft SQL Server on Microsoft Azure is so appealing: the drudgery of the ownership is removed.&lt;/p&gt;
-&lt;p&gt;Don&amp;rsquo;t get me wrong. There&amp;rsquo;s plenty to recommend SQL Server in its own right. SQL Server has been around since 1989! It&amp;rsquo;s routinely ranked up there with the likes of Oracle DB and PostgreSQL as being among the most feature-filled database options out there. It&amp;rsquo;s been built over decades to serve enterprise use cases. It&amp;rsquo;s even got things that other databases, including the venerable PostgreSQL, sometimes lack, like Transparent Data Encryption wherein data is transparenly encrypted at rest.&lt;/p&gt;
-&lt;p&gt;SQL Server has its origins as an enterprise-grade database that ran on one operating system&amp;hellip;. OS/2! Wait, OS/2? Surely you meant Microsoft Windows? Nope! Microsoft joined Ashton-Tate and Sybase in the late 1980s to create a variant of Sybase SQL Server for IBM OS/2 (developed jointly with Microsoft at the time), which was released the following year.&lt;/p&gt;
-&lt;p&gt;This was the first version of Microsoft SQL Server, and served as Microsoft&amp;rsquo;s entry to the enterprise-level database market, competing against Oracle, IBM, and later, Sybase. SQL Server 6.0 was the first version designed for NT without direction from Sybase.&lt;/p&gt;
-&lt;p&gt;Windows NT was released in July 1993 and Sybase and Microsoft took differing directions. Each pursued its own design and marketing schemes. Microsoft negotiated exclusive rights to all versions of SQL Server written for Microsoft operating systems. Sybase and Microsoft SQL Server are two very different things today, with radically different codebases. Now, Microsoft maintain several editions of SQL Server for different usecases and workloads. It&amp;rsquo;s hard to qualify why Microsoft SQL Server is so amazing, so I&amp;rsquo;ll instead refer you to this &lt;a href="https://en.wikipedia.org/wiki/Comparison_of_relational_database_management_systems"&gt;pretty exhaustive Wikipedia page demonstrating&lt;/a&gt; different features acrosss various SQL database engines. Microsoft SQL Server fares pretty well!&lt;/p&gt;&lt;h2&gt;&lt;a href="#configuring-sql-server-on-microsoft-azure" class="anchor" name="configuring-sql-server-on-microsoft-azure"&gt;&lt;/a&gt;Configuring SQL Server on Microsoft Azure&lt;/h2&gt;
-&lt;p&gt;So, it was my hope to show you how to follow these instructions in the user interface in terms of screenshots but that seemed less than ideal because things in the Azure portal tend to be&amp;hellip; squirmy. Things move around. Also, these things are infinitely less scriptable. So, we&amp;rsquo;re going to use the &lt;code&gt;az&lt;/code&gt; CLI. Trouble is, it&amp;rsquo;s &amp;hellip; tedious. &lt;/p&gt;
-&lt;p&gt;Logically, what we want to do is trivial. We want to:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;create a SQL Server server instance&lt;/li&gt;
-  &lt;li&gt;create a SQL Server database in the server. Our Spring Boot application will preload this with a sample schema and data.&lt;/li&gt;
-  &lt;li&gt;expose the SQL Server instance to client accesses from our computer&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;We&amp;rsquo;re going to use a script to do this work:&lt;/p&gt;
-&lt;pre&gt;&lt;code class="prettyprint shell"&gt;#!/bin/bash&#xD;
-&#xD;
-# Set an admin login and password for your database&#xD;
-export adminlogin=bootiful&#xD;
-export password=B00t1ful&#xD;
-&#xD;
-# The logical server name has to be unique in the system&#xD;
-export servername=${1}-server&#xD;
-&#xD;
-# The ip address range that you want to allow to access your DB&#xD;
-export startip=0.0.0.0&#xD;
-export endip=223.255.255.255&#xD;
-&#xD;
-# the name of the resource group&#xD;
-export rg=$1&#xD;
-&#xD;
-# Create a logical server in the resource group&#xD;
-az sql server create \&#xD;
-    --name $servername \&#xD;
-    --resource-group $rg \&#xD;
-    --admin-user $adminlogin \&#xD;
-    --admin-password $password&#xD;
-&#xD;
-# Configure a firewall rule for the server&#xD;
-az sql server firewall-rule create \&#xD;
-    --resource-group $rg \&#xD;
-    --server $servername \&#xD;
-    -n AllowYourIp \&#xD;
-    --start-ip-address $startip \&#xD;
-    --end-ip-address $endip&#xD;
-&#xD;
-# Create a database in the server with zone redundancy as true&#xD;
-az sql db create \&#xD;
-    --resource-group $rg \&#xD;
-    --server $servername \&#xD;
-    --name ${1}-sample-db \&#xD;
-    --service-objective Basic
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;This should dump out a &lt;em&gt;wall&lt;/em&gt; of JSON! Yikes! I culled this example from the Azure documentation and thank goodness, too! I don&amp;rsquo;t think I would want to have to arrive at this solution by myself. You&amp;rsquo;re going to want to note the &lt;code&gt;name&lt;/code&gt; attribute in the first JSON stanza printed to the console. We used the &lt;code&gt;$RANDOM&lt;/code&gt; variable to generate a, well, &lt;em&gt;random&lt;/em&gt; name, so it&amp;rsquo;ll be different on your machine. On my machine the value was &lt;code&gt;bootiful-22952&lt;/code&gt;. &lt;/p&gt;
-&lt;p&gt;Now, you&amp;rsquo;ve got a working server and a working database within the server. If you poke around the Azure Portal you&amp;rsquo;ll gleam all the connection information required to connect to the database. &lt;em&gt;Or&lt;/em&gt;, you could use this &lt;em&gt;one simple trick&lt;/em&gt;. &lt;/p&gt;
-&lt;pre&gt;&lt;code class="prettyprint shell"&gt;az sql db show-connection-string --client jdbc --name bootiful-sample-db
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;This command gives you client connection strings for a number of technologies, including the Windows ADO subsystem, Java&amp;rsquo;s JDBC driver interface, and PHP&amp;rsquo;s PDO interface. You&amp;rsquo;ll need to replace the &lt;code&gt;&amp;lt;server&amp;gt;&lt;/code&gt;, &lt;code&gt;&amp;lt;username&amp;gt;&lt;/code&gt; and &lt;code&gt;&amp;lt;password&amp;gt;&lt;/code&gt; section of the URI with the appropriate values, in this case &lt;code&gt;bootiful-server&lt;/code&gt;, &lt;code&gt;bootiful&lt;/code&gt; and &lt;code&gt;B00t1ful&lt;/code&gt; respectively. Alternatively, as we&amp;rsquo;ll see in a moment, you can define properties and use property placeholder resolution to parameterize this part of the connection string.&lt;/p&gt;&lt;h2&gt;&lt;a href="#introducing-sql-server-into-your-spring-application" class="anchor" name="introducing-sql-server-into-your-spring-application"&gt;&lt;/a&gt;Introducing SQL Server into your Spring Application&lt;/h2&gt;
-&lt;p&gt;Now that we&amp;rsquo;ve got a freshly confiugured SQL Server instrance up and running we need only use it like we would any other JDBC dependency in our codde. If you&amp;rsquo;re using the Spring Initialzir you can select &lt;code&gt;SQL Server&lt;/code&gt; and the appropriate dependency will be added to your Maven or Gradle build. Or, you can add it manually to your build using the following coordinates: &lt;code&gt;com.microsoft.sqlserver&lt;/code&gt; : &lt;code&gt;mssql-jdbc&lt;/code&gt;. You don&amp;rsquo;t need to specify the version; that&amp;rsquo;s done for you by Spring Boot itself. This particular dependency and itnegration with Microosft technologies doesn&amp;rsquo;t even require a particular Maven bill-of-materials dependency - it just works.&lt;/p&gt;
-&lt;p&gt;Then, you&amp;rsquo;ll need to specify the usual confiuguration properites so that Spring can instnantiate a connection to the &lt;code&gt;DataSource&lt;/code&gt; for you.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="prettyprint properties;"&gt;&lt;br/&gt;sql-db=bootiful-sample-db&#xD;
-sql-username=bootiful&#xD;
-sql-password=B00t1ful&#xD;
-sql-servername=bootiful-server&#xD;
-&#xD;
-spring.datasource.url=jdbc:sqlserver://${sql-servername}.database.windows.net:1433;database=${sql-db};user=${sql-username}@${sql-servername};password=${sql-password};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30&#xD;
-spring.datasource.username=${sql-username}&#xD;
-spring.datasource.password=${sql-password}&#xD;
-&#xD;
-spring.datasource.initialization-mode=always&#xD;
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;I&amp;rsquo;ve encoded the username and password here, in the property file. This is a &lt;strong&gt;bad&lt;/strong&gt; idea. Generally, this is exactly the sort of thing you will want to live in an environment variable or in a configuration service like Spring Cloud Config Server. That setup out of the way, it&amp;rsquo;s trivial to use the resulting connection with any technology that supports both JDBC, generally, and Microsoft SQL Server, specifically.&lt;/p&gt;
-&lt;p&gt;Our application will consume data that needs to be installed in the database beforehand. Spring can help us out here. Spring Boot can automatically execute &lt;code&gt;src/main/resources/schema.sql&lt;/code&gt; and &lt;code&gt;src/main/resources/data.sql&lt;/code&gt; against the configured &lt;code&gt;DataSource&lt;/code&gt; if you specify &lt;code&gt;spring.datasource.initialization-mode=always&lt;/code&gt; in your properties. &lt;code&gt;schema.sql&lt;/code&gt; is an ideal place in which to put database DDL, and &lt;code&gt;data.sql&lt;/code&gt; is an ideal place in which to put sample data. &lt;/p&gt;
-&lt;p&gt;Our Spring blog software won&amp;rsquo;t let me capture SQL DDL in this post for, em, &lt;em&gt;security&lt;/em&gt; reasons? So, here is the &lt;a href="https://github.com/joshlong/bootiful-azure-article/blob/master/bootiful-azure/src/main/resources/schema.sql"&gt;&lt;code&gt;src/main/resources/schema.sql&lt;/code&gt;&lt;/a&gt; file on Github. Please consult that.&lt;/p&gt;
-&lt;p&gt;Here is our &lt;code&gt;src/main/resources/data.sql&lt;/code&gt;:&lt;/p&gt;
-&lt;pre&gt;&lt;code class="prettyprint sql"&gt;insert into customer(first_name, last_name)&#xD;
-values (&amp;#39;james&amp;#39;, &amp;#39;watters&amp;#39;),&#xD;
-       (&amp;#39;bob&amp;#39;, &amp;#39;lee&amp;#39;),&#xD;
-       (&amp;#39;trisha&amp;#39;, &amp;#39;gee&amp;#39;),&#xD;
-       (&amp;#39;mario&amp;#39;, &amp;#39;gray&amp;#39;),&#xD;
-       (&amp;#39;spencer&amp;#39;, &amp;#39;gibb&amp;#39;),&#xD;
-       (&amp;#39;yitao&amp;#39;, &amp;#39;dong&amp;#39;);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Both will have been executed before our various event listeners. Let&amp;rsquo;s look at an event listener that pulls that data back out using a &lt;code&gt;JdbcTemplate&lt;/code&gt;. &lt;/p&gt;
-&lt;pre&gt;&lt;code class="prettyprint java"&gt;package com.example.bootifulazure;&#xD;
-&#xD;
-import lombok.AllArgsConstructor;&#xD;
-import lombok.Data;&#xD;
-import lombok.NoArgsConstructor;&#xD;
-import lombok.extern.log4j.Log4j2;&#xD;
-import org.springframework.boot.context.event.ApplicationReadyEvent;&#xD;
-import org.springframework.context.event.EventListener;&#xD;
-import org.springframework.jdbc.core.JdbcTemplate;&#xD;
-import org.springframework.jdbc.core.RowMapper;&#xD;
-import org.springframework.stereotype.Component;&#xD;
-&#xD;
-import java.util.List;&#xD;
-&#xD;
-@Component&#xD;
-@Log4j2&#xD;
-class SqlServerDemo {&#xD;
-&#xD;
-        private final JdbcTemplate jdbcTemplate;&#xD;
-&#xD;
-        SqlServerDemo(JdbcTemplate jdbcTemplate) {&#xD;
-                this.jdbcTemplate = jdbcTemplate;&#xD;
-        }&#xD;
-&#xD;
-        @EventListener(ApplicationReadyEvent.class)&#xD;
-        public void demo() {&#xD;
-                String query = &amp;quot; select TOP 3 * from customer &amp;quot;;&#xD;
-                RowMapper&amp;lt;Customer&amp;gt; rowMapper =&#xD;
-                    (rs, rowNum) -&amp;gt; new Customer(rs.getLong(&amp;quot;id&amp;quot;), rs.getString(&amp;quot;first_name&amp;quot;), rs.getString(&amp;quot;last_name&amp;quot;));&#xD;
-                List&amp;lt;Customer&amp;gt; customerList = this.jdbcTemplate.query(query, rowMapper);&#xD;
-                customerList.forEach(log::info);&#xD;
-        }&#xD;
-&#xD;
-        @Data&#xD;
-        @AllArgsConstructor&#xD;
-        @NoArgsConstructor&#xD;
-        private static class Customer {&#xD;
-                private Long id;&#xD;
-                private String firstName, lastName;&#xD;
-        }&#xD;
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;SQL Server is a compelling database for a number of use cases and the fact that Microsoft Azure makes scaling it so easy is a win for everyone. It&amp;rsquo;s worth mentioning that R2DBC, an effort at reactive SQL datastore access, already offers a Microsoft SQL Server implementation, in addition to H2 and PostgreSQL. You can even do reactive SQL Server access for even faster applications. All, seemingly, at the push of a button (or at least a tedious deployment script).&lt;/p&gt;</content>
   </entry>
 </feed>

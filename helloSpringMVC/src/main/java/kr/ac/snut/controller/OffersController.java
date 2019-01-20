@@ -2,6 +2,8 @@ package kr.ac.snut.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,7 +36,7 @@ public class OffersController {
 	}
 	
 	@RequestMapping("/docreate")
-	public String doCreate(Model model, Offer offer) {
+	public String doCreate(Model model, @Valid Offer offer) {
 		offersService.insert(offer);
 		
 		return "offercreated";

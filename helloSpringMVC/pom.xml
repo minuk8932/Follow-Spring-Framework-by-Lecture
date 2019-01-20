@@ -131,6 +131,11 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.35</version>
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>5.2.4.Final</version>
+		</dependency>
 	</dependencies>
     <build>
         <plugins>
@@ -170,4 +175,12 @@
             </plugin>
         </plugins>
     </build>
+    <dependencyManagement>
+    	<dependencies>
+    		<dependency>
+    			<groupId>ord.hibernate</groupId>
+    			<artifactId>hibernate-validator</artifactId>
+    			<version>5.2.4.Final</version>
+    		</dependency></dependencies>
+    </dependencyManagement>
 </project>
