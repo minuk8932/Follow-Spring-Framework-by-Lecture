@@ -7,6 +7,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import kr.ac.snut.model.Offer;
@@ -36,7 +38,18 @@ public class OffersController {
 	}
 	
 	@RequestMapping("/docreate")
-	public String doCreate(Model model, @Valid Offer offer) {
+	public String doCreate(Model model, @Valid Offer offer, BindingResult result) {
+		if(result.hasErrors()) {
+			System.out.println("Form data does not Validate");
+			
+			List<ObjectError> errors = result.getAllErrors();
+			for(ObjectError error: errors) {
+				System.out.println(error.getDefaultMessage());
+			}
+			
+			return "createoffer";
+		}
+		
 		offersService.insert(offer);
 		
 		return "offercreated";
